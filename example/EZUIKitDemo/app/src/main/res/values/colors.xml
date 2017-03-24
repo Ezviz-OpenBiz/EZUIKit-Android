@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="main_back">#FFF5F5F5</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="black">#ff000000</color>
+
+    <!-- scan color -->
+    <color name="viewfinder_frame">#929292</color>
+    <color name="viewfinder_laser">#fe5600</color>
+    <color name="viewfinder_mask">#000000</color>
+    <color name="result_view">#b0000000</color>
+    <color name="possible_result_points">#c0ffff00</color>
+
+
+</resources>

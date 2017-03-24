@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">EZUIKit Demo</string>
+    <string name="input_app_key">1、AppKey：</string>
+    <string name="input_AccessToken">2、AccessToken：</string>
+    <string name="input_ezopen_url">3、Url (ezopen协议)：</string>
+    <string name="string_btn_code">扫一扫</string>
+    <string name="string_btn_play">开始播放</string>
+    <string name="string_btn_clear_cache">清除参数</string>
+    <string name="string_btn_clear_cache_sure">清除参数后需要重新获取才能进行预览，是否清除参数？</string>
+</resources>
