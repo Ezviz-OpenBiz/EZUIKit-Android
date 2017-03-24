@@ -1,4 +1,4 @@
-package com.ezuikit.open;
+﻿package com.ezuikit.open;
 
 import android.app.Activity;
 import android.content.Context;
@@ -129,8 +129,6 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
         //appkey初始化
         EZUIKit.initWithAppKey(this.getApplication(),appkey);
 
-
-//        EzvizAPI.getInstance().setServerUrl("https://test2.ys7.com:9000","https://test2auth.ys7.com:8443");
 
         //设置授权accesstoken
         EZUIKit.setAccessToken(accesstoken);
