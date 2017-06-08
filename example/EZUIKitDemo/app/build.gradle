@@ -32,27 +32,4 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.2.0'
-//    compile project(':EZUIKit')
 }
-
-task clearJar(type: Delete) {
-    delete 'build/libs/EZUIKit.jar'
-}
-
-//task makeJar(type: Copy) {
-//    from('build/intermediates/bundles/debug')
-//    into('libs/')
-//    include('classes.jar')
-//    rename('classes.jar', 'httputils.jar')
-//}
-
-
-
-
-task makeJar(type: Jar) {
-    //from android.sourceSets.main.java
-    delete 'build/libs/EZUIKit.jar'
-    from '../EZUIKit/build/intermediates/classes/release/'
-    archiveName 'EZUIKit.jar'
-}
-makeJar.dependsOn tasks['build']

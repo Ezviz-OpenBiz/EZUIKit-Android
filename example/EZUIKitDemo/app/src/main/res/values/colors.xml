@@ -8,6 +8,8 @@
     <color name="color_white">#FFFFFFFF</color>
     <color name="black">#ff000000</color>
 
+    <color name="gray">#ff888888</color>
+
     <!-- scan color -->
     <color name="viewfinder_frame">#929292</color>
     <color name="viewfinder_laser">#fe5600</color>

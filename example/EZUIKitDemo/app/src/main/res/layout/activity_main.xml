@@ -128,9 +128,13 @@
                     android:text="@string/string_btn_clear_cache"/>
 
             </LinearLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content">
             <Button
                 android:id="@+id/btn_play"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:textSize="13sp"
@@ -138,6 +142,19 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
                 android:text="@string/string_btn_play"/>
+
+            <CheckBox
+                android:id="@+id/btn_playback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:layout_toRightOf="@+id/btn_play"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/string_btn_playback"/>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/color_white"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/player_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FF000000">
+        <com.ezvizuikit.open.EZUIPlayer
+            android:id="@+id/player_ui"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FF000000"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/player_layout">
+        <Button
+            android:id="@+id/btn_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textColor="#FFFFFFFF"
+            android:background="#66000000"
+            android:text="停止"
+            android:layout_marginTop="20dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/player_layout">
+
+        <com.ezuikit.open.timeshaftbar.TimerShaftBar
+            android:id="@+id/timershaft_bar"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="20dp"
+            android:visibility="visible"
+        />
+    </LinearLayout>
+</RelativeLayout>
+

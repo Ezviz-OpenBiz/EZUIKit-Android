@@ -1,4 +1,4 @@
-﻿package com.ezuikit.open;
+package com.ezuikit.open;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,13 +22,14 @@ import android.widget.Toast;
 import com.ezvizuikit.open.EZUIError;
 import com.ezvizuikit.open.EZUIKit;
 import com.ezvizuikit.open.EZUIPlayer;
-import com.videogo.realplay.RealPlayStatus;
 import com.videogo.util.LogUtil;
+
+import java.util.Calendar;
 
 /**
  * 预览界面
  */
-public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallBack, View.OnClickListener, WindowSizeChangeNotifier.OnWindowSizeChangedListener {
+public class PlayActivity extends Activity implements View.OnClickListener, WindowSizeChangeNotifier.OnWindowSizeChangedListener, EZUIPlayer.EZUIPlayerCallBack {
     private static final String TAG = "PlayActivity";
     public static final String APPKEY = "AppKey";
     public static final String AccessToekn = "AccessToekn";
@@ -56,6 +57,8 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
      *  播放url：ezopen协议
      */
     private String playUrl;
+
+
 
     /**
      * 开启预览播放
@@ -128,16 +131,11 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
         EZUIKit.setDebug(true);
         //appkey初始化
         EZUIKit.initWithAppKey(this.getApplication(),appkey);
-
-
         //设置授权accesstoken
         EZUIKit.setAccessToken(accesstoken);
         //设置播放资源参数
-        mEZUIPlayer.setPlayParams(playUrl,this);
-        //播放
-        mEZUIPlayer.startPlay();
-
-
+        mEZUIPlayer.setCallBack(this);
+        mEZUIPlayer.setUrl(playUrl);
     }
     @Override
     protected void onResume() {
@@ -163,7 +161,7 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
         super.onStop();
         Log.d(TAG,"onStop + "+mEZUIPlayer.getStatus());
         //界面stop时，如果在播放，那isResumePlay标志位置为true，以便resume时恢复播放
-        if (mEZUIPlayer.getStatus() != RealPlayStatus.STATUS_STOP) {
+        if (mEZUIPlayer.getStatus() != EZUIPlayer.STATUS_STOP) {
             isResumePlay = true;
         }
         //停止播放
@@ -181,14 +179,21 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
 
     @Override
     public void onPlaySuccess() {
+        Log.d(TAG,"onPlaySuccess");
         // TODO: 2017/2/7 播放成功处理
+        mBtnPlay.setText("暂停");
     }
 
     @Override
     public void onPlayFail(EZUIError error) {
+        Log.d(TAG,"onPlayFail");
         // TODO: 2017/2/21 播放失败处理
         if (error.getErrorString().equals(EZUIError.UE_ERROR_INNER_VERIFYCODE_ERROR)){
 
+        }else if(error.getErrorString().equalsIgnoreCase(EZUIError.UE_ERROR_NOT_FOUND_RECORD_FILES)){
+            // TODO: 2017/5/12
+            //未发现录像文件
+            Toast.makeText(this,getString(R.string.string_not_found_recordfile),Toast.LENGTH_LONG).show();
         }
     }
 
@@ -198,16 +203,38 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
         Log.d(TAG,"onVideoSizeChange  width = "+width+"   height = "+height);
     }
 
+    @Override
+    public void onPrepared() {
+        Log.d(TAG,"onPrepared");
+        //播放
+        mEZUIPlayer.startPlay();
+    }
+
+    @Override
+    public void onPlayTime(Calendar calendar) {
+        Log.d(TAG,"onPlayTime");
+        if (calendar != null) {
+            // TODO: 2017/2/16 当前播放时间
+            Log.d(TAG,"onPlayTime calendar = "+calendar.getTime().toString());
+        }
+    }
+
+    @Override
+    public void onPlayFinish() {
+        // TODO: 2017/2/16 播放结束
+        Log.d(TAG,"onPlayFinish");
+    }
+
 
     @Override
     public void onClick(View view) {
         if (view == mBtnPlay){
             // TODO: 2017/2/14
-            if (mEZUIPlayer.getStatus() == RealPlayStatus.STATUS_PLAY) {
+            if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_PLAY) {
                 //播放状态，点击停止播放
                 mBtnPlay.setText("播放");
                 mEZUIPlayer.stopPlay();
-            } else if (mEZUIPlayer.getStatus() == RealPlayStatus.STATUS_STOP) {
+            } else if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_STOP) {
                 //停止状态，点击播放
                 mBtnPlay.setText("停止");
                 mEZUIPlayer.startPlay();
@@ -233,7 +260,7 @@ public class PlayActivity extends Activity implements EZUIPlayer.EZUIPlayerCallB
         //竖屏
         if (!isWideScrren) {
             //竖屏调整播放区域大小，宽全屏，高根据视频分辨率自适应
-            mEZUIPlayer.setSurfaceSize(dm.widthPixels,0);
+            mEZUIPlayer.setSurfaceSize(dm.widthPixels, 0);
         } else {
             //横屏屏调整播放区域大小，宽、高均全屏，播放区域根据视频分辨率自适应
             mEZUIPlayer.setSurfaceSize(dm.widthPixels,dm.heightPixels);

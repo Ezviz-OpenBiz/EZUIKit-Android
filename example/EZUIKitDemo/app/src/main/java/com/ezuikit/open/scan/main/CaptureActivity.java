@@ -125,18 +125,22 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback 
             return;
         }
         Log.d(TAG, "handleDecode-> resultString = "+resultString);
-        Gson gson = new Gson();
-        PlayParams playParams = gson.fromJson(resultString,PlayParams.class);
-        if (playParams != null
-                && !TextUtils.isEmpty(playParams.AppKey)
-                && !TextUtils.isEmpty(playParams.AccessToken)
-                && !TextUtils.isEmpty(playParams.Url)){
-            Intent intent = new Intent();
-            intent.putExtra(PlayActivity.APPKEY,playParams.AppKey);
-            intent.putExtra(PlayActivity.AccessToekn,playParams.AccessToken);
-            intent.putExtra(PlayActivity.PLAY_URL,playParams.Url);
-            setResult(MainActivity.RESULT_OK, intent);
-            finish();
+        try {
+            Gson gson = new Gson();
+            PlayParams playParams = gson.fromJson(resultString,PlayParams.class);
+            if (playParams != null
+                    && !TextUtils.isEmpty(playParams.AppKey)
+                    && !TextUtils.isEmpty(playParams.AccessToken)
+                    && !TextUtils.isEmpty(playParams.Url)){
+                Intent intent = new Intent();
+                intent.putExtra(PlayActivity.APPKEY,playParams.AppKey);
+                intent.putExtra(PlayActivity.AccessToekn,playParams.AccessToken);
+                intent.putExtra(PlayActivity.PLAY_URL,playParams.Url);
+                setResult(MainActivity.RESULT_OK, intent);
+                finish();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

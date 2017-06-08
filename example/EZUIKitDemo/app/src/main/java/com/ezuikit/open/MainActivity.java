@@ -10,12 +10,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ezuikit.open.scan.main.CaptureActivity;
 import com.ezvizuikit.open.EZUIKit;
+import com.ezvizuikit.open.EZUIPlayer;
 import com.videogo.openapi.EZOpenSDK;
 
 import static com.ezuikit.open.PlayActivity.APPKEY;
@@ -32,6 +34,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * 预览播放按钮
      */
     private Button mButtonPlay;
+
+    private CheckBox mCheckBoxBack;
 
     /**
      * 清除播放缓存参数按钮
@@ -69,6 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         mButtonCode = (Button) findViewById(R.id.btn_code);
         mButtonPlay = (Button) findViewById(R.id.btn_play);
+        mCheckBoxBack = (CheckBox) findViewById(R.id.btn_playback);
         mButtonClear = (Button) findViewById(R.id.btn_clear_cache);
         mAppkeyEditText = (EditText) findViewById(R.id.edit_appkey);
         mAccessTokenEditText = (EditText) findViewById(R.id.edit_accesstoken);
@@ -77,6 +82,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mButtonCode.setOnClickListener(this);
         mButtonPlay.setOnClickListener(this);
         mButtonClear.setOnClickListener(this);
+        mButtonPlay = (Button) findViewById(R.id.btn_play);
         mTextViewVersion.setText(EZUIKit.EZUIKit_Version+" (SDK "+ EZOpenSDK.getVersion()+")");
         getDefaultParams();
     }
@@ -107,11 +113,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 return;
             }
             saveDefaultParams();
-            //启动播放页面
-            PlayActivity.startPlayActivity(this,mAppKey,mAccessToken,mUrl);
-
-            //启动播放页面
-            PlayActivity.startPlayActivity(this,"76d8a02ae81a4260a02e470ebb48077d","at.ao8hv9xl265kopuj660q9igq00zqe2i0-3ursg79f60-1dr0iky-0saaemrff\n",mUrl);
+            EZUIPlayer.EZUIKitPlayMode mode = EZUIPlayer.getUrlPlayType(mUrl);
+            if (mode == EZUIPlayer.EZUIKitPlayMode.EZUIKIT_PLAYMODE_LIVE){
+                //直播预览
+                //启动播放页面
+                PlayActivity.startPlayActivity(this, mAppKey, mAccessToken, mUrl);
+            }else if(mode == EZUIPlayer.EZUIKitPlayMode.EZUIKIT_PLAYMODE_REC){
+                //回放
+                if (mCheckBoxBack.isChecked()){
+                    //启动回放带时间轴页面
+                    PlayBackActivity.startPlayBackActivity(this, mAppKey, mAccessToken, mUrl);
+                }else{
+                    //启动普通回放页面
+                    PlayActivity.startPlayActivity(this, mAppKey, mAccessToken, mUrl);
+                }
+            }else{
+               Toast.makeText(this,"播放模式未知，请检查url",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
