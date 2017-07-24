@@ -85,6 +85,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mButtonPlay = (Button) findViewById(R.id.btn_play);
         mTextViewVersion.setText(EZUIKit.EZUIKit_Version+" (SDK "+ EZOpenSDK.getVersion()+")");
         getDefaultParams();
+
     }
 
     @Override
@@ -113,7 +114,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 return;
             }
             saveDefaultParams();
-            EZUIPlayer.EZUIKitPlayMode mode = EZUIPlayer.getUrlPlayType(mUrl);
+            EZUIPlayer.EZUIKitPlayMode mode = null;
+            mode = EZUIPlayer.getUrlPlayType(mUrl);
             if (mode == EZUIPlayer.EZUIKitPlayMode.EZUIKIT_PLAYMODE_LIVE){
                 //直播预览
                 //启动播放页面
