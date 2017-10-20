@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.ezuikit.open"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ezuikit.open">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -35,26 +35,31 @@
         android:supportsRtl="true">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:name=".PlayActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <activity
+            android:name=".scan.main.CaptureActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:name=".PlayBackActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
+        <activity android:name=".SelecteAreaActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".PlayActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <activity
-            android:name=".scan.main.CaptureActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PlayBackActivity"
-                  android:configChanges="orientation|keyboardHidden|screenSize"
-                  android:exported="false"
-                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
     </application>
 

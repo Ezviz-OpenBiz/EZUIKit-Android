@@ -14,7 +14,6 @@ public class WindowSizeChangeNotifier {
     private OnWindowSizeChangedListener mListener = null;
 
 
-
     public static interface OnWindowSizeChangedListener {
     	void onWindowSizeChanged(int w, int h, int oldW, int oldH);
     }

@@ -14,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.ezuikit.open.scan.main.CaptureActivity;
 import com.ezvizuikit.open.EZUIKit;
 import com.ezvizuikit.open.EZUIPlayer;
@@ -22,6 +21,7 @@ import com.videogo.openapi.EZOpenSDK;
 
 import static com.ezuikit.open.PlayActivity.APPKEY;
 import static com.ezuikit.open.PlayActivity.AccessToekn;
+import static com.ezuikit.open.PlayActivity.Global_AreanDomain;
 import static com.ezuikit.open.PlayActivity.PLAY_URL;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -57,13 +57,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
      */
     private String mUrl;
 
+    /**
+     * 海外版本areaDomin
+     */
+    private String mGlobalAreaDomain;
+
     private EditText mAppkeyEditText;
 
     private EditText mAccessTokenEditText;
 
     private EditText mUrlEditText;
 
+    private EditText mGlobalAreanDoaminEditText;
+
     private TextView mTextViewVersion;
+
+    private boolean isGlobal = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,19 +80,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isGlobal = getIntent().getBooleanExtra(PlayActivity.Global_AreanDomain,false);
+        if (isGlobal){
+            findViewById(R.id.layout_global).setVisibility(View.VISIBLE);
+        }
         mButtonCode = (Button) findViewById(R.id.btn_code);
         mButtonPlay = (Button) findViewById(R.id.btn_play);
-        mCheckBoxBack = (CheckBox) findViewById(R.id.btn_playback);
+        mCheckBoxBack = (CheckBox) findViewById(R.id.checkbox_playback);
         mButtonClear = (Button) findViewById(R.id.btn_clear_cache);
         mAppkeyEditText = (EditText) findViewById(R.id.edit_appkey);
         mAccessTokenEditText = (EditText) findViewById(R.id.edit_accesstoken);
         mUrlEditText = (EditText) findViewById(R.id.edit_url);
         mTextViewVersion = (TextView) findViewById(R.id.text_version);
+        mGlobalAreanDoaminEditText = (EditText) findViewById(R.id.edit_areadomain);
         mButtonCode.setOnClickListener(this);
         mButtonPlay.setOnClickListener(this);
         mButtonClear.setOnClickListener(this);
         mButtonPlay = (Button) findViewById(R.id.btn_play);
         mTextViewVersion.setText(EZUIKit.EZUIKit_Version+" (SDK "+ EZOpenSDK.getVersion()+")");
+        if (isGlobal){
+            mCheckBoxBack.setVisibility(View.GONE);
+        }
         getDefaultParams();
 
     }
@@ -101,6 +118,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             mAppKey = mAppkeyEditText.getText().toString().trim();
             mAccessToken = mAccessTokenEditText.getText().toString().trim();
             mUrl = mUrlEditText.getText().toString().trim();
+            mGlobalAreaDomain = mGlobalAreanDoaminEditText.getText().toString().trim();
             if (TextUtils.isEmpty(mAppKey)){
                 Toast.makeText(this,"appkey can not be null",Toast.LENGTH_LONG).show();
                 return;
@@ -113,19 +131,47 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Toast.makeText(this,"url can not be null",Toast.LENGTH_LONG).show();
                 return;
             }
+            if (isGlobal){
+                if (TextUtils.isEmpty(mGlobalAreaDomain)){
+                    Toast.makeText(this,"AreaDomain can not be null",Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
             saveDefaultParams();
+            //mAppKey = "0f74e3ed04794788a1b2ac9e45109031";
+            //mAccessToken = "ra.2p1gawd41hludifdaa1tknxbaaertds1-26inilry6p-1bwus1o-p7nnz4jen";
+            //mUrl = "ezopen://open.ys7.com/737959033/1.live";
+
             EZUIPlayer.EZUIKitPlayMode mode = null;
             mode = EZUIPlayer.getUrlPlayType(mUrl);
             if (mode == EZUIPlayer.EZUIKitPlayMode.EZUIKIT_PLAYMODE_LIVE){
                 //直播预览
+                if (isGlobal){
+                    //启动播放页面
+                    PlayActivity.startPlayActivityGlobal(this, mAppKey, mAccessToken, mUrl,mGlobalAreaDomain);
+                    //应用内只能初始化一次，当首次选择了国内或者海外版本，并点击进入预览回放，此时不能再进行国内海外切换
+                    return;
+                }
                 //启动播放页面
                 PlayActivity.startPlayActivity(this, mAppKey, mAccessToken, mUrl);
             }else if(mode == EZUIPlayer.EZUIKitPlayMode.EZUIKIT_PLAYMODE_REC){
                 //回放
                 if (mCheckBoxBack.isChecked()){
+                    if (isGlobal){
+                        //启动普通回放页面
+                        PlayBackActivity.startPlayActivityGlobal(this, mAppKey, mAccessToken, mUrl,mGlobalAreaDomain);
+                        //应用内只能初始化一次，当首次选择了国内或者海外版本，并点击进入预览回放，此时不能再进行国内海外切换
+                        return;
+                    }
                     //启动回放带时间轴页面
                     PlayBackActivity.startPlayBackActivity(this, mAppKey, mAccessToken, mUrl);
                 }else{
+                    if (isGlobal){
+                        //启动普通回放页面
+                        PlayActivity.startPlayActivityGlobal(this, mAppKey, mAccessToken, mUrl,mGlobalAreaDomain);
+                        //应用内只能初始化一次，当首次选择了国内或者海外版本，并点击进入预览回放，此时不能再进行国内海外切换
+                        return;
+                    }
                     //启动普通回放页面
                     PlayActivity.startPlayActivity(this, mAppKey, mAccessToken, mUrl);
                 }
@@ -165,6 +211,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 String appkey = data.getStringExtra(APPKEY);
                 String accesstoken = data.getStringExtra(AccessToekn);
                 String playUrl = data.getStringExtra(PLAY_URL);
+                String areadoamin = data.getStringExtra(Global_AreanDomain);
                 if (!TextUtils.isEmpty(appkey)){
                     mAppKey = appkey;
                     mAppkeyEditText.setText(appkey);
@@ -176,6 +223,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 if (!TextUtils.isEmpty(playUrl)){
                     mUrl = playUrl;
                     mUrlEditText.setText(playUrl);
+                }
+                if (!TextUtils.isEmpty(areadoamin)){
+                    mGlobalAreaDomain = areadoamin;
+                    mGlobalAreanDoaminEditText.setText(mGlobalAreaDomain);
+                }else{
+                    mGlobalAreaDomain = "";
+                    mGlobalAreanDoaminEditText.setText("");
                 }
                 saveDefaultParams();
             }
@@ -190,9 +244,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mAppKey = sharedPreferences.getString(PlayActivity.APPKEY,"");
         mAccessToken = sharedPreferences.getString(PlayActivity.AccessToekn,"");
         mUrl = sharedPreferences.getString(PlayActivity.PLAY_URL,"");
+        mGlobalAreaDomain = sharedPreferences.getString(PlayActivity.Global_AreanDomain,"");
         mAppkeyEditText.setText(mAppKey);
         mAccessTokenEditText.setText(mAccessToken);
         mUrlEditText.setText(mUrl);
+        mGlobalAreanDoaminEditText.setText(mGlobalAreaDomain);
     }
 
     /**
@@ -204,6 +260,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         editor.putString(PlayActivity.APPKEY,mAppKey);
         editor.putString(PlayActivity.AccessToekn,mAccessToken);
         editor.putString(PlayActivity.PLAY_URL,mUrl);
+        if (!isGlobal){
+            editor.putString(PlayActivity.Global_AreanDomain,"");
+        }else{
+            editor.putString(PlayActivity.Global_AreanDomain,mGlobalAreaDomain);
+        }
         editor.commit();
     }
 
@@ -214,14 +275,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mAppKey = "";
         mAccessToken = "";
         mUrl = "";
+        mGlobalAreaDomain = "";
         SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name),0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(PlayActivity.APPKEY,mAppKey);
         editor.putString(PlayActivity.AccessToekn,mAccessToken);
         editor.putString(PlayActivity.PLAY_URL,mUrl);
+        editor.putString(PlayActivity.Global_AreanDomain,mGlobalAreaDomain);
         editor.commit();
         mAppkeyEditText.setText(mAppKey);
         mAccessTokenEditText.setText(mAccessToken);
         mUrlEditText.setText(mUrl);
+        mGlobalAreanDoaminEditText.setText(mGlobalAreaDomain);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /**
+         * 如果需要切换国内和海外平台需要杀掉应用重启
+         *
+         */
+        System.exit(0);
     }
 }

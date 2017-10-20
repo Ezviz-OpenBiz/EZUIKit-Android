@@ -10,4 +10,11 @@
     <string name="string_btn_clear_cache_sure">清除参数后需要重新获取才能进行预览，是否清除参数？</string>
     <string name="string_not_found_recordfile">"未找到录像文件"</string>
 
+    <string name="string_stop_play">"停止"</string>
+    <string name="string_pause_play">"暂停"</string>
+    <string name="string_start_play">"播放"</string>
+
+    <string name="input_areadomain_url">4、AreaDomain：</string>
+    <string name="string_global">英文海外版本</string>
+    <string name="string_cn">中文国内版本</string>
 </resources>

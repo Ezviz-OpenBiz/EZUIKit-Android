@@ -34,7 +34,7 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
     public static final String APPKEY = "AppKey";
     public static final String AccessToekn = "AccessToekn";
     public static final String PLAY_URL = "play_url";
-
+    public static final String Global_AreanDomain = "global_arean_domain";
     private EZUIPlayer mEZUIPlayer;
 
     private Button mBtnPlay;
@@ -58,6 +58,10 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
      */
     private String playUrl;
 
+    /**
+     * 海外版本areaDomin
+     */
+    private String mGlobalAreaDomain;
 
 
     /**
@@ -75,6 +79,23 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
         context.startActivity(intent);
     }
 
+    /**
+     * 开启海外版本预览播放
+     * @param context
+     * @param appkey       开发者申请的appkey
+     * @param accesstoken   开发者登录授权的accesstoken
+     * @param url           预览url
+     * @param global_AreanDomain 海外版本域名
+     */
+    public static void startPlayActivityGlobal(Context context,String appkey,String accesstoken,String url,String global_AreanDomain){
+        Intent intent = new Intent(context, PlayActivity.class);
+        intent.putExtra(APPKEY,appkey);
+        intent.putExtra(AccessToekn,accesstoken);
+        intent.putExtra(PLAY_URL,url);
+        intent.putExtra(Global_AreanDomain,global_AreanDomain);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
@@ -87,6 +108,7 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
         appkey = intent.getStringExtra(APPKEY);
         accesstoken = intent.getStringExtra(AccessToekn);
         playUrl = intent.getStringExtra(PLAY_URL);
+        mGlobalAreaDomain = intent.getStringExtra(Global_AreanDomain);
         if (TextUtils.isEmpty(appkey)
                 || TextUtils.isEmpty(accesstoken)
                 || TextUtils.isEmpty(playUrl)){
@@ -104,7 +126,7 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
         mEZUIPlayer.setLoadingView(initProgressBar());
 
         mBtnPlay.setOnClickListener(this);
-        mBtnPlay.setText("停止");
+        mBtnPlay.setText(R.string.string_stop_play);
         preparePlay();
         setSurfaceSize();
     }
@@ -129,8 +151,14 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
     private void preparePlay(){
         //设置debug模式，输出log信息
         EZUIKit.setDebug(true);
-        //appkey初始化
-        EZUIKit.initWithAppKey(this.getApplication(),appkey);
+        if (TextUtils.isEmpty(mGlobalAreaDomain)) {
+            //appkey初始化
+            EZUIKit.initWithAppKey(this.getApplication(), appkey);
+
+        }else{
+            //appkey初始化 海外版本
+            EZUIKit.initWithAppKeyGlobal(this.getApplication(), appkey,mGlobalAreaDomain);
+        }
         //设置授权accesstoken
         EZUIKit.setAccessToken(accesstoken);
         //设置播放资源参数
@@ -145,7 +173,7 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
         //界面stop时，如果在播放，那isResumePlay标志位置为true，resume时恢复播放
         if (isResumePlay) {
             isResumePlay = false;
-            mBtnPlay.setText("停止");
+            mBtnPlay.setText(R.string.string_stop_play);
             mEZUIPlayer.startPlay();
         }
     }
@@ -181,7 +209,7 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
     public void onPlaySuccess() {
         Log.d(TAG,"onPlaySuccess");
         // TODO: 2017/2/7 播放成功处理
-        mBtnPlay.setText("暂停");
+        mBtnPlay.setText(R.string.string_pause_play);
     }
 
     @Override
@@ -232,11 +260,11 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
             // TODO: 2017/2/14
             if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_PLAY) {
                 //播放状态，点击停止播放
-                mBtnPlay.setText("播放");
+                mBtnPlay.setText(R.string.string_start_play);
                 mEZUIPlayer.stopPlay();
             } else if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_STOP) {
                 //停止状态，点击播放
-                mBtnPlay.setText("停止");
+                mBtnPlay.setText(R.string.string_stop_play);
                 mEZUIPlayer.startPlay();
             }
         }

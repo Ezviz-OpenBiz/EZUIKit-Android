@@ -34,6 +34,7 @@ import java.util.Calendar;
 
 import static com.ezuikit.open.PlayActivity.APPKEY;
 import static com.ezuikit.open.PlayActivity.AccessToekn;
+import static com.ezuikit.open.PlayActivity.Global_AreanDomain;
 import static com.ezuikit.open.PlayActivity.PLAY_URL;
 
 public class PlayBackActivity extends Activity implements WindowSizeChangeNotifier.OnWindowSizeChangedListener, View.OnClickListener, EZUIPlayer.EZUIPlayerCallBack {
@@ -67,6 +68,11 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
      */
     private String playUrl;
 
+
+    /**
+     * 海外版本areaDomin
+     */
+    private String mGlobalAreaDomain;
     /**
      * 开启回放
      *
@@ -80,6 +86,23 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
         intent.putExtra(APPKEY, appkey);
         intent.putExtra(AccessToekn, accesstoken);
         intent.putExtra(PLAY_URL, url);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 开启海外版本预览播放
+     * @param context
+     * @param appkey       开发者申请的appkey
+     * @param accesstoken   开发者登录授权的accesstoken
+     * @param url           预览url
+     * @param global_AreanDomain 海外版本域名
+     */
+    public static void startPlayActivityGlobal(Context context,String appkey,String accesstoken,String url,String global_AreanDomain){
+        Intent intent = new Intent(context, PlayActivity.class);
+        intent.putExtra(APPKEY,appkey);
+        intent.putExtra(AccessToekn,accesstoken);
+        intent.putExtra(PLAY_URL,url);
+        intent.putExtra(Global_AreanDomain,global_AreanDomain);
         context.startActivity(intent);
     }
 
@@ -102,6 +125,7 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
         appkey = intent.getStringExtra(APPKEY);
         accesstoken = intent.getStringExtra(AccessToekn);
         playUrl = intent.getStringExtra(PLAY_URL);
+        mGlobalAreaDomain = intent.getStringExtra(Global_AreanDomain);
         if (TextUtils.isEmpty(appkey)
                 || TextUtils.isEmpty(accesstoken)
                 || TextUtils.isEmpty(playUrl)) {
@@ -114,7 +138,7 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
 
         mBtnPlay = (Button) findViewById(R.id.btn_play);
         mBtnPlay.setOnClickListener(this);
-        mBtnPlay.setText("停止");
+        mBtnPlay.setText(R.string.string_stop_play);
 
         mTimerShaftBar = (TimerShaftBar) findViewById(R.id.timershaft_bar);
         mTimerShaftBar.setTimerShaftLayoutListener(new TimerShaftBar.TimerShaftBarListener() {
@@ -143,9 +167,13 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
     private void preparePlay() {
         //设置debug模式，输出log信息
         EZUIKit.setDebug(true);
-        //appkey初始化
-        EZUIKit.initWithAppKey(this.getApplication(), appkey);
-
+        if (TextUtils.isEmpty(mGlobalAreaDomain)) {
+            //appkey初始化
+            EZUIKit.initWithAppKey(this.getApplication(), appkey);
+        }else{
+            //appkey初始化 海外版本
+            EZUIKit.initWithAppKeyGlobal(this.getApplication(), appkey,mGlobalAreaDomain);
+        }
         //设置授权accesstoken
         EZUIKit.setAccessToken(accesstoken);
         mEZUIPlayer.setCallBack(this);
@@ -177,7 +205,7 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
         //界面stop时，如果在播放，那isResumePlay标志位置为true，resume时恢复播放
         if (isResumePlay) {
             isResumePlay = false;
-            mBtnPlay.setText("停止");
+            mBtnPlay.setText(R.string.string_stop_play);
             mEZUIPlayer.startPlay();
         }
     }
@@ -246,7 +274,7 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
     public void onPlaySuccess() {
         Log.d(TAG,"onPlaySuccess");
         mTimerShaftBar.setRefereshPlayTimeWithPlayer();
-        mBtnPlay.setText("暂停");
+        mBtnPlay.setText(R.string.string_stop_play);
     }
 
     @Override
@@ -307,14 +335,14 @@ public class PlayBackActivity extends Activity implements WindowSizeChangeNotifi
             // TODO: 2017/2/14
             if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_PLAY) {
                 //播放状态，点击停止播放
-                mBtnPlay.setText("播放");
+                mBtnPlay.setText(R.string.string_start_play);
                 mEZUIPlayer.pausePlay();
             } else if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_PAUSE) {
                 //停止状态，点击播放
-                mBtnPlay.setText("停止");
+                mBtnPlay.setText(R.string.string_stop_play);
                 mEZUIPlayer.resumePlay();
             } else if (mEZUIPlayer.getStatus() == EZUIPlayer.STATUS_STOP) {
-                mBtnPlay.setText("停止");
+                mBtnPlay.setText(R.string.string_stop_play);
                 mEZUIPlayer.startPlay();
             }
         }

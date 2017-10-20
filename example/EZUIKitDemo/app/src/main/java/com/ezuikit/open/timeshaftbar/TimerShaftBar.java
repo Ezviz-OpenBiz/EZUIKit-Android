@@ -13,7 +13,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -675,10 +674,10 @@ public class TimerShaftBar extends View implements TimerShaftInterface{
                 mTouchMode = TOUCH_MODE_SCROLLER;
                 isTouchScreent = true;
                 // 第一个点被按下
-                Toast.makeText(getContext(), "第一个点被按下", Toast.LENGTH_SHORT);
+//                Toast.makeText(getContext(), "第一个点被按下", Toast.LENGTH_SHORT);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                Toast.makeText(getContext(), "第一个点被按下", Toast.LENGTH_SHORT);
+//                Toast.makeText(getContext(), "第一个点被按下", Toast.LENGTH_SHORT);
                 mTouchMode = TOUCH_MODE_SCALE;
                 isRefereshPlayTimeWithPlayer = true;
                 break;
