@@ -39,11 +39,7 @@ import static com.ezuikit.open.PlayActivity.PLAY_URL;
 
 public class PlayBackActivity extends Activity implements WindowSizeChangeNotifier.OnWindowSizeChangedListener, View.OnClickListener, EZUIPlayer.EZUIPlayerCallBack {
     private static final String TAG = "PlayBackActivity";
-    //    private String appkey = "82687a21a6a64072aa219863d7ca94da";
-//    private String accesstoken = "at.68ezqtxl10pxbkd71s6994fu0mp2mo88-2o8j063x21-0t2bkss-4ij3tuima";
-//    private String playUrl = "ezopen://IAIKKO@open.ys7.com/504242549/1.mix.rec?mute=true&begin=20170508000000&end=20170508235959";
     private MyOrientationDetector mOrientationDetector;
-    //    private EZUIPlayer mEZUIPlayer;
     private EZUIPlayer mEZUIPlayer;
 
     private TimerShaftBar mTimerShaftBar;

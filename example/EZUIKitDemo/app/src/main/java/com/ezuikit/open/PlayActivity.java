@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,12 +19,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.ezvizuikit.open.EZUIError;
 import com.ezvizuikit.open.EZUIKit;
 import com.ezvizuikit.open.EZUIPlayer;
 import com.videogo.util.LogUtil;
-
 import java.util.Calendar;
 
 /**
@@ -135,14 +134,18 @@ public class PlayActivity extends Activity implements View.OnClickListener, Wind
      * 创建加载view
      * @return
      */
-    private ProgressBar initProgressBar() {
-        ProgressBar mProgressBar = new ProgressBar(this);
+    private View initProgressBar() {
+        RelativeLayout relativeLayout = new RelativeLayout(this);
+        relativeLayout.setBackgroundColor(Color.parseColor("#000000"));
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        relativeLayout.setLayoutParams(lp);
+        RelativeLayout.LayoutParams rlp=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        rlp.addRule(RelativeLayout.CENTER_IN_PARENT);//addRule参数对应RelativeLayout XML布局的属性
+        ProgressBar mProgressBar = new ProgressBar(this);
         mProgressBar.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress));
-        mProgressBar.setLayoutParams(lp);
-        return mProgressBar;
+        relativeLayout.addView(mProgressBar,rlp);
+        return relativeLayout;
     }
 
     /**

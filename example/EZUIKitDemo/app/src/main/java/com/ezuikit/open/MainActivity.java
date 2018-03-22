@@ -138,10 +138,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
             }
             saveDefaultParams();
-            //mAppKey = "0f74e3ed04794788a1b2ac9e45109031";
-            //mAccessToken = "ra.2p1gawd41hludifdaa1tknxbaaertds1-26inilry6p-1bwus1o-p7nnz4jen";
-            //mUrl = "ezopen://open.ys7.com/737959033/1.live";
-
             EZUIPlayer.EZUIKitPlayMode mode = null;
             mode = EZUIPlayer.getUrlPlayType(mUrl);
             if (mode == EZUIPlayer.EZUIKitPlayMode.EZUIKIT_PLAYMODE_LIVE){
@@ -176,7 +172,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     PlayActivity.startPlayActivity(this, mAppKey, mAccessToken, mUrl);
                 }
             }else{
-               Toast.makeText(this,"播放模式未知，请检查url",Toast.LENGTH_LONG).show();
+               Toast.makeText(this,"播放模式未知，默认进入直播预览模式",Toast.LENGTH_LONG).show();
+                //直播预览
+                if (isGlobal){
+                    //启动播放页面
+                    PlayActivity.startPlayActivityGlobal(this, mAppKey, mAccessToken, mUrl,mGlobalAreaDomain);
+                    //应用内只能初始化一次，当首次选择了国内或者海外版本，并点击进入预览回放，此时不能再进行国内海外切换
+                    return;
+                }
+                //启动播放页面
+                PlayActivity.startPlayActivity(this, mAppKey, mAccessToken, mUrl);
             }
         }
     }
